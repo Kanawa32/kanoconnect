@@ -214,6 +214,7 @@ function CustomerDashboard({ stats }) {
               <tr className="border-b border-surface-100">
                 <th className="text-left table-header py-3 px-2">Tracking #</th>
                 <th className="text-left table-header py-3 px-2">Route</th>
+                <th className="text-left table-header py-3 px-2">Rider</th>
                 <th className="text-left table-header py-3 px-2">Status</th>
                 <th className="text-left table-header py-3 px-2">Amount</th>
                 <th className="text-left table-header py-3 px-2">Date</th>
@@ -235,6 +236,9 @@ function CustomerDashboard({ stats }) {
                       <span className="truncate">{shipment.deliveryAddress}</span>
                     </div>
                   </td>
+                  <td className="py-3 px-2 text-sm text-surface-700">
+                    {shipment.rider ? `${shipment.rider.firstName} ${shipment.rider.lastName}` : '—'}
+                  </td>
                   <td className="py-3 px-2">
                     <StatusBadge status={shipment.status} />
                   </td>
@@ -247,7 +251,7 @@ function CustomerDashboard({ stats }) {
                 </tr>
               )) || (
                 <tr>
-                  <td colSpan={5} className="py-12 text-center text-surface-400">
+                  <td colSpan={6} className="py-12 text-center text-surface-400">
                     <Package className="w-10 h-10 mx-auto mb-3 text-surface-300" />
                     <p className="font-medium">No orders yet</p>
                     <p className="text-sm mt-1">Create your first order to get started</p>

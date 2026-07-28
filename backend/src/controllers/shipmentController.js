@@ -38,7 +38,7 @@ export const createShipment = asyncHandler(async (req, res) => {
   const totalWeight = items.reduce((sum, item) => sum + (item.weight * item.quantity), 0);
   const distance = routeInfo?.distance || 10;
 
-  const pricing = calculatePrice(distance, totalWeight, serviceType || 'standard');
+  const pricing = await calculatePrice(distance, totalWeight, serviceType || 'standard');
 
   const shipment = await Shipment.create({
     customer: req.user._id,
@@ -218,6 +218,10 @@ export const updateShipmentStatus = asyncHandler(async (req, res) => {
 
   if (!validTransitions[shipment.status]?.includes(status)) {
     throw new ApiError(400, `Cannot transition from ${shipment.status} to ${status}`);
+  }
+
+  if (status === 'delivered' && shipment.paymentStatus !== 'paid') {
+    throw new ApiError(400, 'Payment must be confirmed before marking as delivered');
   }
 
   // Add tracking event
@@ -408,6 +412,46 @@ export const confirmPayment = asyncHandler(async (req, res) => {
   await shipment.save();
 
   successResponse(res, shipment, 'Payment confirmed');
+});
+
+export const confirmDelivery = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const shipment = await Shipment.findById(id);
+  if (!shipment || shipment.isDeleted) {
+    throw new ApiError(404, 'Shipment not found');
+  }
+
+  if (shipment.customer.toString() !== req.user._id.toString()) {
+    throw new ApiError(403, 'Only the customer can confirm delivery');
+  }
+
+  if (shipment.status !== 'out_for_delivery') {
+    throw new ApiError(400, 'Delivery can only be confirmed when status is Out for Delivery');
+  }
+
+  if (shipment.paymentStatus !== 'paid') {
+    throw new ApiError(400, 'Payment must be confirmed before delivery');
+  }
+
+  await shipment.addTrackingEvent({
+    status: 'delivered',
+    location: { address: shipment.deliveryAddress },
+    note: 'Delivery confirmed by customer',
+    updatedBy: req.user._id,
+  });
+
+  shipment.actualDeliveryTime = new Date();
+
+  if (shipment.rider) {
+    await User.findByIdAndUpdate(shipment.rider, {
+      $inc: { 'riderProfile.totalDeliveries': 1 },
+    });
+  }
+
+  await shipment.save();
+
+  successResponse(res, shipment, 'Delivery confirmed successfully');
 });
 
 export const acceptOrder = asyncHandler(async (req, res) => {

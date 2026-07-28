@@ -93,6 +93,7 @@ export default function ShipmentList() {
                 <th className="text-left table-header py-3 px-2">Tracking #</th>
                 <th className="text-left table-header py-3 px-2">Route</th>
                 <th className="text-left table-header py-3 px-2">Items</th>
+                <th className="text-left table-header py-3 px-2">Rider</th>
                 <th className="text-left table-header py-3 px-2">Status</th>
                 <th className="text-left table-header py-3 px-2">Amount</th>
                 <th className="text-left table-header py-3 px-2">Date</th>
@@ -100,7 +101,7 @@ export default function ShipmentList() {
             </thead>
             <tbody className="divide-y divide-surface-50">
               {isLoading ? (
-                <tr><td colSpan={6} className="py-12 text-center">
+                <tr><td colSpan={7} className="py-12 text-center">
                   <div className="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin mx-auto" />
                 </td></tr>
               ) : data?.data?.map((shipment) => (
@@ -124,6 +125,9 @@ export default function ShipmentList() {
                     </div>
                   </td>
                   <td className="py-3 px-2 text-sm text-surface-600">{shipment.items?.length || 0} items</td>
+                  <td className="py-3 px-2 text-sm text-surface-700">
+                    {shipment.rider ? `${shipment.rider.firstName} ${shipment.rider.lastName}` : '—'}
+                  </td>
                   <td className="py-3 px-2">
                     <span className={`inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold capitalize ${statusColors[shipment.status] || 'bg-surface-50 text-surface-700'}`}>
                       {shipment.status?.replace('_', ' ')}
@@ -135,7 +139,7 @@ export default function ShipmentList() {
                   </td>
                 </tr>
               )) || (
-                <tr><td colSpan={6} className="py-12 text-center text-surface-400">
+                <tr><td colSpan={7} className="py-12 text-center text-surface-400">
                   <Package className="w-10 h-10 mx-auto mb-3 text-surface-300" />
                   <p className="font-medium">No orders found</p>
                 </td></tr>

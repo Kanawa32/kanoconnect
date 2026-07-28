@@ -428,20 +428,63 @@ export default function ShipmentDetail() {
                   Mark as In Transit
                 </button>
               )}
-              {shipment?.status === 'out_for_delivery' && (
+              {shipment?.status === 'in_transit' && (
                 <button
-                  onClick={() => statusUpdateMutation.mutate({ status: 'delivered', note: 'Package delivered successfully' })}
+                  onClick={() => statusUpdateMutation.mutate({ status: 'out_for_delivery', note: 'Package out for delivery' })}
                   disabled={statusUpdateMutation.isPending}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg font-semibold text-sm shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 py-3 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 active:scale-[0.98]"
+                  className="w-full btn-primary flex items-center justify-center gap-2 py-3"
                 >
                   {statusUpdateMutation.isPending ? (
                     <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                   ) : (
-                    <CheckCircle className="w-4 h-4" />
+                    <Truck className="w-4 h-4" />
                   )}
-                  Mark as Delivered
+                  Out for Delivery
                 </button>
               )}
+              {shipment?.status === 'out_for_delivery' && (
+                shipment?.paymentStatus === 'paid' ? (
+                  <button
+                    onClick={() => statusUpdateMutation.mutate({ status: 'delivered', note: 'Package delivered successfully' })}
+                    disabled={statusUpdateMutation.isPending}
+                    className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg font-semibold text-sm shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 py-3 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 active:scale-[0.98]"
+                  >
+                    {statusUpdateMutation.isPending ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <CheckCircle className="w-4 h-4" />
+                    )}
+                    Mark as Delivered
+                  </button>
+                ) : (
+                  <div className="p-3 bg-amber-50 rounded-xl border border-amber-200/60 text-sm text-amber-700 text-center">
+                    Payment must be confirmed before delivery
+                  </div>
+                )
+              )}
+            </div>
+          )}
+
+          {/* Customer Confirm Delivery */}
+          {user?._id === shipment?.customer?._id && shipment?.status === 'out_for_delivery' && shipment?.paymentStatus === 'paid' && (
+            <div className="card space-y-3">
+              <h3 className="font-bold text-surface-900">Confirm Delivery</h3>
+              <p className="text-sm text-surface-600">Have you received your package?</p>
+              <button
+                onClick={async () => {
+                  try {
+                    await api.post(`/shipments/${id}/confirm-delivery`);
+                    toast.success('Delivery confirmed! Thank you.');
+                    refetch();
+                  } catch (err) {
+                    toast.error(err.response?.data?.message || 'Failed to confirm delivery');
+                  }
+                }}
+                className="w-full bg-gradient-to-r from-emerald-500 to-emerald-600 text-white rounded-lg font-semibold text-sm shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 py-3 hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 active:scale-[0.98]"
+              >
+                <CheckCircle className="w-4 h-4" />
+                Confirm Delivery
+              </button>
             </div>
           )}
 

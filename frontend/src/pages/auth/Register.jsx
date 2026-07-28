@@ -15,7 +15,6 @@ const schema = Joi.object({
   confirmPassword: Joi.string().valid(Joi.ref('password')).required().messages({
     'any.only': 'Passwords do not match',
   }),
-  role: Joi.string().valid('customer', 'rider').default('customer'),
 });
 
 export default function Register() {
@@ -76,14 +75,6 @@ export default function Register() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
               <input {...register('phone')} className="input-field" placeholder="+2348012345678" />
               {errors.phone && <p className="text-sm text-red-600 mt-1">{errors.phone.message}</p>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Account Type</label>
-              <select {...register('role')} className="input-field">
-                <option value="customer">Customer</option>
-                <option value="rider">Rider</option>
-              </select>
             </div>
 
             <div>
