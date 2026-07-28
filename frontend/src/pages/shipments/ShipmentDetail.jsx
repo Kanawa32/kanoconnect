@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { 
@@ -46,6 +46,7 @@ export default function ShipmentDetail() {
   const [riderLocation, setRiderLocation] = React.useState(null);
   const [paymentMode, setPaymentMode] = React.useState(null);
   const [copied, setCopied] = React.useState(false);
+  const [riderEarningsInput, setRiderEarningsInput] = React.useState('');
 
   const { data, isLoading, refetch } = useQuery({
     queryKey: ['shipment', id],
@@ -250,25 +251,34 @@ export default function ShipmentDetail() {
         <div className="space-y-6">
           {/* Price */}
           <div className="card-elevated">
-            <h3 className="font-bold text-surface-900 mb-4">Pricing</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex justify-between">
-                <span className="text-surface-500">Base Price</span>
-                <span className="font-medium text-surface-700">₦{shipment?.basePrice?.toLocaleString()}</span>
+            <h3 className="font-bold text-surface-900 mb-4">{user?.role === 'rider' ? 'Your Earnings' : 'Pricing'}</h3>
+            {user?.role === 'rider' ? (
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-surface-500">This Delivery</span>
+                  <span className="text-lg font-bold text-emerald-600">₦{shipment?.riderEarnings?.toLocaleString() || 0}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-surface-500">Distance</span>
-                <span className="font-medium text-surface-700">₦{shipment?.distancePrice?.toLocaleString()}</span>
+            ) : (
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-surface-500">Base Price</span>
+                  <span className="font-medium text-surface-700">₦{shipment?.basePrice?.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-surface-500">Distance</span>
+                  <span className="font-medium text-surface-700">₦{shipment?.distancePrice?.toLocaleString()}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-surface-500">Weight</span>
+                  <span className="font-medium text-surface-700">₦{shipment?.weightPrice?.toLocaleString()}</span>
+                </div>
+                <div className="border-t border-surface-100 pt-3 flex justify-between">
+                  <span className="font-bold text-surface-900">Total</span>
+                  <span className="text-lg font-bold gradient-text">₦{shipment?.totalAmount?.toLocaleString()}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-surface-500">Weight</span>
-                <span className="font-medium text-surface-700">₦{shipment?.weightPrice?.toLocaleString()}</span>
-              </div>
-              <div className="border-t border-surface-100 pt-3 flex justify-between">
-                <span className="font-bold text-surface-900">Total</span>
-                <span className="text-lg font-bold gradient-text">₦{shipment?.totalAmount?.toLocaleString()}</span>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Payment */}
@@ -393,6 +403,38 @@ export default function ShipmentDetail() {
                 <CheckCircle className="w-4 h-4" />
                 Confirm Payment (Bank Transfer)
               </button>
+            </div>
+          )}
+
+          {/* Admin Set Rider Earnings */}
+          {(user?.role === 'admin' || user?.role === 'super_admin') && shipment?.rider && (
+            <div className="card space-y-3">
+              <h3 className="font-bold text-surface-900">Rider Earnings</h3>
+              <p className="text-sm text-surface-500">Set how much the rider earns for this delivery</p>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  defaultValue={shipment.riderEarnings || ''}
+                  onChange={(e) => setRiderEarningsInput(e.target.value)}
+                  className="input-field flex-1"
+                  placeholder="Amount"
+                  min="0"
+                />
+                <button
+                  onClick={async () => {
+                    try {
+                      await api.patch(`/shipments/${id}/set-rider-earnings`, { amount: Number(riderEarningsInput) });
+                      toast.success('Rider earnings updated');
+                      refetch();
+                    } catch (err) {
+                      toast.error(err.response?.data?.message || 'Failed');
+                    }
+                  }}
+                  className="btn-primary"
+                >
+                  Set
+                </button>
+              </div>
             </div>
           )}
 

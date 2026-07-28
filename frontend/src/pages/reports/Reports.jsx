@@ -3,6 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import { Download, Calendar, TrendingUp, Package, DollarSign, Users } from 'lucide-react';
 import api from '../../services/api';
+import { useAuthStore } from '../../store/authStore';
+import toast from 'react-hot-toast';
 import { format, subDays } from 'date-fns';
 
 const COLORS = ['#2563eb', '#22c55e', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
@@ -49,9 +51,24 @@ export default function Reports() {
             <option value="30">Last 30 days</option>
             <option value="90">Last 90 days</option>
           </select>
-          <button className="btn-secondary flex items-center gap-2">
+          <button
+            onClick={async () => {
+              try {
+                const res = await api.get(`/reports/export?startDate=${startDate}&endDate=${endDate}&type=${reportType}`, { responseType: 'blob' });
+                const url = window.URL.createObjectURL(new Blob([res.data]));
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `report-${reportType}-${startDate}-${endDate}.csv`;
+                a.click();
+                window.URL.revokeObjectURL(url);
+              } catch (err) {
+                toast.error('Export failed');
+              }
+            }}
+            className="btn-secondary flex items-center gap-2"
+          >
             <Download className="w-4 h-4" />
-            Export
+            Export CSV
           </button>
         </div>
       </div>

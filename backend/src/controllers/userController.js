@@ -184,7 +184,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
 
     const earnings = await Shipment.aggregate([
       { $match: { rider: userId, status: 'delivered', isDeleted: false } },
-      { $group: { _id: null, total: { $sum: '$totalAmount' } } },
+      { $group: { _id: null, total: { $sum: '$riderEarnings' } } },
     ]);
 
     const recentShipments = await Shipment.find({ rider: userId, isDeleted: false })

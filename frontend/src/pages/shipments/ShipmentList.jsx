@@ -133,7 +133,9 @@ export default function ShipmentList() {
                       {shipment.status?.replace('_', ' ')}
                     </span>
                   </td>
-                  <td className="py-3 px-2 text-sm font-bold text-surface-900">₦{shipment.totalAmount?.toLocaleString()}</td>
+                  <td className="py-3 px-2 text-sm font-bold text-surface-900">
+                    {isRider ? `₦${(shipment.riderEarnings || 0).toLocaleString()}` : `₦${shipment.totalAmount?.toLocaleString()}`}
+                  </td>
                   <td className="py-3 px-2 text-sm text-surface-500">
                     {format(new Date(shipment.createdAt), 'MMM d, yyyy')}
                   </td>

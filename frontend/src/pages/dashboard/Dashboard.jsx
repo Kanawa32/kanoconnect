@@ -134,7 +134,7 @@ function RiderDashboard({ stats }) {
                     <StatusBadge status={shipment.status} />
                   </td>
                   <td className="py-3 px-2 text-sm font-bold text-surface-900">
-                    ₦{shipment.totalAmount?.toLocaleString()}
+                    ₦{(shipment.riderEarnings || 0).toLocaleString()}
                   </td>
                   <td className="py-3 px-2 text-sm text-surface-500">
                     {format(new Date(shipment.createdAt), 'MMM d, yyyy')}

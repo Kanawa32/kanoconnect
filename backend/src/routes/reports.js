@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import {
-  getRevenueReport, getShipmentReport, getRiderPerformance, getFleetReport,
+  getRevenueReport, getShipmentReport, getRiderPerformance, getFleetReport, exportReport,
 } from '../controllers/reportController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 
@@ -13,5 +13,6 @@ router.get('/revenue', getRevenueReport);
 router.get('/shipments', getShipmentReport);
 router.get('/riders', getRiderPerformance);
 router.get('/fleet', getFleetReport);
+router.get('/export', exportReport);
 
 export default router;

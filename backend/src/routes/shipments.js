@@ -3,7 +3,7 @@ import {
   createShipment, getShipments, getShipment, getShipmentByTracking,
   updateShipment, updateShipmentStatus, assignRider, rateShipment,
   deleteShipment, getShipmentStats, getAvailableOrders, acceptOrder,
-  confirmPayment, confirmDelivery,
+  confirmPayment, confirmDelivery, setRiderEarnings,
 } from '../controllers/shipmentController.js';
 import { authenticate, authorize } from '../middleware/auth.js';
 import { createShipmentValidator, validate } from '../middleware/validator.js';
@@ -23,6 +23,7 @@ router.patch('/:id/status', authorize('rider', 'dispatcher', 'admin', 'super_adm
 router.patch('/:id/assign-rider', authorize('dispatcher', 'admin', 'super_admin'), assignRider);
 router.patch('/:id/accept', authorize('rider'), acceptOrder);
 router.patch('/:id/confirm-payment', authorize('admin', 'super_admin'), confirmPayment);
+router.patch('/:id/set-rider-earnings', authorize('admin', 'super_admin'), setRiderEarnings);
 router.post('/:id/confirm-delivery', authorize('customer'), confirmDelivery);
 router.post('/:id/rate', authorize('customer'), rateShipment);
 router.delete('/:id', deleteShipment);

@@ -414,6 +414,25 @@ export const confirmPayment = asyncHandler(async (req, res) => {
   successResponse(res, shipment, 'Payment confirmed');
 });
 
+export const setRiderEarnings = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { amount } = req.body;
+
+  if (amount == null || amount < 0) {
+    throw new ApiError(400, 'Valid earnings amount is required');
+  }
+
+  const shipment = await Shipment.findById(id);
+  if (!shipment || shipment.isDeleted) {
+    throw new ApiError(404, 'Shipment not found');
+  }
+
+  shipment.riderEarnings = amount;
+  await shipment.save();
+
+  successResponse(res, shipment, 'Rider earnings updated');
+});
+
 export const confirmDelivery = asyncHandler(async (req, res) => {
   const { id } = req.params;
 

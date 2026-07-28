@@ -69,6 +69,7 @@ const shipmentSchema = new mongoose.Schema(
     expressFee: { type: Number, default: 0 },
     discount: { type: Number, default: 0 },
     totalAmount: { type: Number, required: true },
+    riderEarnings: { type: Number, default: 0 },
 
     // Service type
     serviceType: { type: String, enum: ['standard', 'express', 'same_day', 'scheduled'], default: 'standard' },
