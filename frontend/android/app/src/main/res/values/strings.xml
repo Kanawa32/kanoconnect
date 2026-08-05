@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">KanoConnect</string>
+    <string name="title_activity_main">KanoConnect</string>
+    <string name="package_name">com.kanoconnect.app</string>
+    <string name="custom_url_scheme">com.kanoconnect.app</string>
+</resources>
