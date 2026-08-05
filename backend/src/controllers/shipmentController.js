@@ -374,7 +374,7 @@ export const getAvailableOrders = asyncHandler(async (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const skip = (parseInt(page) - 1) * parseInt(limit);
 
-  const query = { status: 'pending', isDeleted: false };
+  const query = { status: 'pending', paymentStatus: 'paid', isDeleted: false };
   query.$or = [{ rider: { $exists: false } }, { rider: null }];
 
   const [shipments, total] = await Promise.all([
@@ -487,6 +487,10 @@ export const acceptOrder = asyncHandler(async (req, res) => {
 
   if (shipment.rider) {
     throw new ApiError(400, 'Order already assigned to a rider');
+  }
+
+  if (shipment.paymentStatus !== 'paid') {
+    throw new ApiError(400, 'Payment must be completed before order can be accepted');
   }
 
   shipment.rider = req.user._id;

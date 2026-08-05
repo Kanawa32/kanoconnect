@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { 
   Package, Truck, Users, DollarSign, 
   TrendingUp, Clock, MapPin, ArrowUpRight,
-  CheckCircle, PackageCheck, Navigation, ArrowUpRight as ArrowUp
+  CheckCircle, PackageCheck, Navigation, ArrowUpRight as ArrowUp, Wallet
 } from 'lucide-react';
 import api from '../../services/api';
 import { useAuthStore } from '../../store/authStore';
@@ -274,7 +274,7 @@ function AdminDashboard({ stats }) {
         <p className="text-surface-500 mt-1">Overview of your logistics operations</p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         <StatCard
           title="Total Orders"
           value={stats?.totalShipments?.toLocaleString() || 0}
@@ -298,12 +298,19 @@ function AdminDashboard({ stats }) {
           index={2}
         />
         <StatCard
+          title="Paid to Drivers"
+          value={`₦${(stats?.totalPaidToDrivers || 0).toLocaleString()}`}
+          icon={Wallet}
+          color="bg-gradient-to-br from-violet-500 to-purple-600"
+          index={3}
+        />
+        <StatCard
           title="Total Revenue"
           value={`₦${(stats?.totalRevenue || 0).toLocaleString()}`}
           icon={DollarSign}
           trend="+8.5% this month"
           color="bg-gradient-to-br from-primary-600 to-accent-600"
-          index={3}
+          index={4}
         />
       </div>
 

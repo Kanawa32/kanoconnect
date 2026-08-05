@@ -11,6 +11,7 @@ import reportRoutes from './reports.js';
 import geocodeRoutes from './geocode.js';
 import paymentAccountRoutes from './paymentAccounts.js';
 import pricingRoutes from './pricing.js';
+import withdrawalRoutes from './withdrawals.js';
 
 const router = Router();
 
@@ -26,5 +27,6 @@ router.use('/reports', reportRoutes);
 router.use('/payment-accounts', paymentAccountRoutes);
 router.use('/pricing', pricingRoutes);
 router.use('/geocode', geocodeRoutes);
+router.use('/withdrawals', withdrawalRoutes);
 
 export default router;

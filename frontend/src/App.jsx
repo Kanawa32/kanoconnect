@@ -26,6 +26,10 @@ import FleetList from './pages/fleet/FleetList';
 // Reports
 import Reports from './pages/reports/Reports';
 
+// Withdrawals
+import Withdrawals from './pages/withdrawals/Withdrawals';
+import AdminWithdrawals from './pages/withdrawals/AdminWithdrawals';
+
 // Users
 import UserList from './pages/dashboard/UserList';
 
@@ -66,6 +70,8 @@ function App() {
           <Route path="/fleet/fleets" element={<FleetList />} />
 
           <Route path="/reports" element={<Reports />} />
+          <Route path="/withdrawals" element={<Withdrawals />} />
+          <Route path="/admin/withdrawals" element={<AdminWithdrawals />} />
           <Route path="/users" element={<UserList />} />
           <Route path="/drivers" element={<Drivers />} />
           <Route path="/payments/settings" element={<PaymentSettings />} />

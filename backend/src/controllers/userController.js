@@ -233,7 +233,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
   }
 
   // Admin / dispatcher / super_admin
-  const [totalUsers, totalShipments, totalRevenue, todayShipments, pendingShipments, activeRiders] = await Promise.all([
+  const [totalUsers, totalShipments, totalRevenue, todayShipments, pendingShipments, activeRiders, paidToDrivers] = await Promise.all([
     User.countDocuments({ isDeleted: false }),
     Shipment.countDocuments({ isDeleted: false }),
     Shipment.aggregate([
@@ -243,6 +243,10 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     Shipment.countDocuments({ createdAt: { $gte: today }, isDeleted: false }),
     Shipment.countDocuments({ status: 'pending', isDeleted: false }),
     User.countDocuments({ role: 'rider', 'riderProfile.isOnline': true, isActive: true }),
+    Shipment.aggregate([
+      { $match: { status: 'delivered', isDeleted: false } },
+      { $group: { _id: null, total: { $sum: '$riderEarnings' } } },
+    ]),
   ]);
 
   const recentShipments = await Shipment.find({ isDeleted: false })
@@ -259,6 +263,7 @@ export const getDashboardStats = asyncHandler(async (req, res) => {
     todayShipments,
     pendingShipments,
     activeRiders,
+    totalPaidToDrivers: paidToDrivers[0]?.total || 0,
     recentShipments,
   });
 });

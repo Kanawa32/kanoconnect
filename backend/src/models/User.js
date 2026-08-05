@@ -52,6 +52,13 @@ const userSchema = new mongoose.Schema(
         lastUpdated: Date,
       },
       isOnline: { type: Boolean, default: false },
+      bankDetails: {
+        bankName: String,
+        accountName: String,
+        accountNumber: String,
+        bankCode: String,
+        recipientCode: String,
+      },
       documents: {
         idCard: String,
         driverLicense: String,

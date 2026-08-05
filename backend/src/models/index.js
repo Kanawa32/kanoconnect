@@ -7,5 +7,6 @@ import Notification from './Notification.js';
 import Hub from './Hub.js';
 import PaymentAccount from './PaymentAccount.js';
 import Pricing from './Pricing.js';
+import Withdrawal from './Withdrawal.js';
 
-export { User, Shipment, Vehicle, Fleet, Payment, Notification, Hub, PaymentAccount, Pricing };
+export { User, Shipment, Vehicle, Fleet, Payment, Notification, Hub, PaymentAccount, Pricing, Withdrawal };

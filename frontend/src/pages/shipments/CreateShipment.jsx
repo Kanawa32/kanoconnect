@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { joiResolver } from '@hookform/resolvers/joi';
 import Joi from 'joi';
@@ -105,10 +105,14 @@ export default function CreateShipment() {
 
   const { fields, append, remove } = useFieldArray({ control, name: 'items' });
 
+  const queryClient = useQueryClient();
+
   const createMutation = useMutation({
     mutationFn: (data) => api.post('/shipments', data),
     onSuccess: (response) => {
       toast.success('Order created successfully!');
+      queryClient.invalidateQueries({ queryKey: ['dashboard-stats'] });
+      queryClient.invalidateQueries({ queryKey: ['shipments'] });
       navigate(`/shipments/${response.data.data._id}`);
     },
     onError: (error) => {

@@ -3,7 +3,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, Package, Truck, Users, 
   BarChart3, MapPin, Settings, X, LogOut,
-  Warehouse, CreditCard, Bell, Zap, UserCheck, Banknote, DollarSign
+  Warehouse, CreditCard, Bell, Zap, UserCheck, Banknote, DollarSign, Wallet
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 
@@ -20,6 +20,8 @@ const navItems = [
   { path: '/payments/settings', label: 'Payment Settings', icon: Banknote, roles: ['admin', 'super_admin'] },
   { path: '/pricing', label: 'Pricing', icon: DollarSign, roles: ['admin', 'super_admin'] },
   { path: '/track', label: 'Tracking', icon: MapPin, roles: ['customer', 'rider', 'dispatcher', 'admin', 'super_admin'] },
+  { path: '/withdrawals', label: 'Withdrawals', icon: Wallet, roles: ['rider'] },
+  { path: '/admin/withdrawals', label: 'Withdrawals', icon: Wallet, roles: ['admin', 'super_admin'] },
 ];
 
 export default function Sidebar({ isOpen, onClose }) {
