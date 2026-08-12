@@ -4,9 +4,8 @@ services:
     runtime: node
     repo: https://github.com/Kanawa32/kanoconnect
     branch: main
-    buildCommand: npm install
-    startCommand: npm start
-    rootDirectory: backend
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -49,8 +48,7 @@ services:
     runtime: static
     repo: https://github.com/Kanawa32/kanoconnect
     branch: main
-    buildCommand: npm install && npm run build
-    rootDirectory: frontend
+    buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
