@@ -1,0 +1,118 @@
+Kano Connect - Render Deployment Environment Variables
+=====================================================
+
+This document lists all environment variables required for the Kano Connect application
+deployed on Render, along with the APIs and services used in the project.
+
+--- PROJECT OVERVIEW ---
+Kano Connect is an enterprise logistics/delivery platform with multi-role dashboards
+(Customer, Rider, Dispatcher, Admin, Super Admin), live GPS tracking over Socket.IO,
+Paystack payments, Cloudinary uploads, Nodemailer emails, Recharts reports, and a PWA.
+
+--- API SERVICES AND INTEGRATIONS ---
+
+1. MONGODB (Database)
+   - Service: MongoDB
+   - Used for: User data, shipments, deliveries, orders, ratings
+   - Connection: MONGODB_URI environment variable
+   - Documentation: https://www.mongodb.com/docs/
+
+2. PAYSTACK (Payments)
+   - Service: Paystack (Africa payment gateway)
+   - Used for: Payment processing, transaction validation, refunds
+   - Keys needed:
+     * PAYSTACK_SECRET_KEY - Server-side secret key
+     * PAYSTACK_PUBLIC_KEY - Frontend public key
+   - Documentation: https://paystack.com/docs
+   - API endpoints:
+     - Initialize transaction: /initialize
+     - Verify transaction: /verify
+     - List transactions: /transaction
+
+3. CLOUDINARY (Media Storage)
+   - Service: Cloudinary
+   - Used for: User avatars, shipment photos, documentation images
+   - Keys needed:
+     * CLOUDINARY_CLOUD_NAME
+     * CLOUDINARY_API_KEY
+     * CLOUDINARY_API_SECRET
+   - Documentation: https://cloudinary.com/documentation
+   - Use case: Image upload, transformation, storage
+
+4. SMTP / EMAIL (Nodemailer)
+   - Service: Any SMTP email server
+   - Used for: User registration, password reset, shipment notifications
+   - Variables needed:
+     * SMTP_HOST (e.g., smtp.gmail.com, smtp.mailtrap.io)
+     * SMTP_PORT (e.g., 587 for TLS, 465 for SSL)
+     * SMTP_USER (email username)
+     * SMTP_PASS (email password or app password)
+   - Documentation: https://nodemailer.com/about/
+
+5. GOOGLE MAPS (Geolocation)
+   - Service: Google Cloud Maps Platform
+   - Used for: Rider location tracking, customer delivery addresses, route planning
+   - Variable: GOOGLE_MAPS_API_KEY
+   - Documentation: https://developers.google.com/maps
+   - Required APIs:
+     - Maps JavaScript API
+     - Geocoding API
+     - Directions API (optional)
+
+6. REDIS (Caching/Queues)
+   - Service: Redis (or Redis-compatible)
+   - Used for: Real-time tracking, session caching, job queues
+   - Variable: REDIS_URL
+   - Documentation: https://redis.io/docs/
+
+7. JWT (Authentication)
+   - Used for: Access token and refresh token generation
+   - Variables:
+     * JWT_SECRET - Sign access tokens
+     * JWT_REFRESH_SECRET - Sign refresh tokens
+   - Library: jsonwebtoken (Node.js)
+
+--- FRONTEND CONFIGURATION ---
+
+8. VITE_API_URL
+   - Used by: Vite build process
+   - Purpose: Configures API base URL for frontend environment
+   - Value example: https://kanoconnect-api.onrender.com
+   - Definition: vite.env.ts or .env file at build time
+
+--- BACKEND CONFIGURATION ---
+
+9. NODE_ENV
+   - Value: production
+   - Purpose: Sets Node.js environment mode
+
+10. PORT
+    - Value: 10000
+    - Purpose: Server listening port (Render sets this automatically)
+
+11. CLIENT_URL
+    - Purpose: Frontend URL for API CORS and redirect URIs
+    - Value example: http://localhost:5173 (dev) or https://kano-web.onrender.com (prod)
+
+--- RENDER DEPLOYMENT ---
+
+render.yaml Configuration:
+- Service 1: kanoconnect-api (Node.js backend)
+  - Build: cd backend && npm install
+  - Start: cd backend && npm start
+  - Health check: /health
+  - Runtime: node
+
+- Service 2: kanoconnect (Static frontend)
+  - Build: cd frontend && npm install && npm run build
+  - Publish: frontend/dist
+  - Runtime: static
+
+--- SECURITY NOTES ---
+
+- All environment variables marked with sync: false must be set manually in Render Dashboard
+- Never commit .env files or sensitive values to the repository
+- Use Render's "Environment" section to add each variable per service
+- Recommended: Use Render's secret management for JWT secrets, Paystack keys, etc.
+
+--- END OF DOCUMENT ---
