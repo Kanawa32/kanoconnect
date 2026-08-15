@@ -1,5 +1,8 @@
 {
-  "appId": "com.kanoconnect.app",
-  "appName": "KanoConnect",
-  "webDir": "dist"
+	"appId": "com.kanoconnect.app",
+	"appName": "KanoConnect",
+	"webDir": "dist",
+	"server": {
+		"androidScheme": "http"
+	}
 }
