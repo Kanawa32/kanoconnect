@@ -56,6 +56,7 @@ service:
       WORKDIR /app
       COPY package.json package-lock.json ./
       RUN npm ci --production
+      RUN chmod +x ./android/gradlew 2>/dev/null || true
       COPY . .
       EXPOSE 10000
       CMD ["node", "src/server.js"]
