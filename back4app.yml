@@ -2,7 +2,7 @@ service:
   name: kanoconnect-api
   region: us
   runtime: node
-  source_dir: backend
+  source_dir: .
   spec:
     starter:
       code_source:
@@ -11,7 +11,7 @@ service:
         branch: main
       build_command: npm install
       start_command: npm start
-      run_path: ./backend
+      run_path: .
     env_vars:
       - name: NODE_ENV
         value: production
