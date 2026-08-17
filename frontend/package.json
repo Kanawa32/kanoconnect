@@ -10,7 +10,8 @@
     "test": "vitest",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0"
   },
-  "dependencies": {
+"dependencies": {
+    "@capacitor/android": "^8.5.0",
     "@capacitor/core": "^8.5.0",
     "@hookform/resolvers": "^3.9.0",
     "@react-google-maps/api": "^2.19.3",
