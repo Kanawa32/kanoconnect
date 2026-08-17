@@ -1,0 +1,62 @@
+service:
+  name: kanoconnect-api
+  region: us
+  runtime: node
+  source_dir: backend
+  spec:
+    starter:
+      code_source:
+        provider: github
+        repo: https://github.com/Kanawa32/kanoconnect
+        branch: main
+      build_command: npm install
+      start_command: npm start
+      run_path: ./backend
+    env_vars:
+      - name: NODE_ENV
+        value: production
+      - name: PORT
+        value: 10000
+      - name: MONGODB_URI
+        sync: false
+      - name: JWT_SECRET
+        sync: false
+      - name: JWT_REFRESH_SECRET
+        sync: false
+      - name: CLIENT_URL
+        sync: false
+      - name: PAYSTACK_SECRET_KEY
+        sync: false
+      - name: PAYSTACK_PUBLIC_KEY
+        sync: false
+      - name: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - name: CLOUDINARY_API_KEY
+        sync: false
+      - name: CLOUDINARY_API_SECRET
+        sync: false
+      - name: SMTP_HOST
+        sync: false
+      - name: SMTP_PORT
+        sync: false
+      - name: SMTP_USER
+        sync: false
+      - name: SMTP_PASS
+        sync: false
+      - name: GOOGLE_MAPS_API_KEY
+        sync: false
+      - name: REDIS_URL
+        sync: false
+      - name: JWT_EXPIRE
+        value: "15m"
+      - name: JWT_REFRESH_EXPIRE
+        value: "7d"
+    dockerfile: |
+      FROM node:18-alpine
+      WORKDIR /app
+      COPY package.json package-lock.json ./
+      RUN npm ci --production
+      RUN rm -rf android .capacitor 2>/dev/null || true
+      COPY . .
+      EXPOSE 10000
+      CMD ["node", "src/server.js"]
